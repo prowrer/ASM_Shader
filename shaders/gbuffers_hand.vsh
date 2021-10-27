@@ -1,0 +1,1 @@
+#include "/lib/programs/gbuffers_solid/vsh.glsl"
