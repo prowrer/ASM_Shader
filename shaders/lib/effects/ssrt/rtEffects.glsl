@@ -1,13 +1,13 @@
 // This file contains code to compute screen space ray tracing effects:
 // reflections, global illumination
 
-vec4 ssr_ssgi(in vec2 coord, in vec3 v, in vec3 p, in vec3 n, in Material m, in vec3 color)
+vec3 ssr_ssgi(vec2 coord, vec3 v, vec3 p, vec3 n, Material m, vec3 color)
 {
     const int samples = 1;
     const int steps = 30;
     const float stepSize = 1.0;
 
-    vec4 result = vec4(0.0);
+    vec3 result = vec3(0.0);
     float averagedRayDistance = 0.0;
     float sum_w = 0.0;
     for (int s = 0; s < samples; s++)
@@ -75,8 +75,7 @@ vec4 ssr_ssgi(in vec2 coord, in vec3 v, in vec3 p, in vec3 n, in Material m, in 
             vec3 hitColor = getColor(hitCoord).rgb;
             energy *= hitColor*weight;
 
-            result.rgb += energy;
-            result.a++;
+            result += energy;
             averagedRayDistance += length(hitPos - p);
             sum_w++;
         }
@@ -89,16 +88,6 @@ vec4 ssr_ssgi(in vec2 coord, in vec3 v, in vec3 p, in vec3 n, in Material m, in 
     // Thanks to Samuel in ShaderLABS discord server for helping me with specular (hit) reprojection
     vec2 reprojected_coord;
     if (m.roughness < 0.4)
-        reprojected_coord = getPrevCoord(p + v*averagedRayDistance);
-    else
-        reprojected_coord = getPrevCoord(p);
-    vec4 prev_ssrt = max(getPreviousSSRT(reprojected_coord), 0.0);
-    if (reprojected_coord.x > 1.0 || reprojected_coord.x < 0.0 || reprojected_coord.y > 1.0 || reprojected_coord.y < 0.0)
-        return result;
-    else
-        #ifdef doTemporal
-            return mix(prev_ssrt, result, frameTime);
-        #else
-            return result;
-        #endif
+        p += v*averagedRayDistance;
+    return result;//temporal(result, colortex4, p, 1.0);
 }

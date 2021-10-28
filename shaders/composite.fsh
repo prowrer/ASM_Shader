@@ -50,11 +50,12 @@ void main()
     vec4 ssrt = vec4(0);
     #ifdef doSSRT
         if (depth0 < 1.0)
-            ssrt = ssr_ssgi(texcoord, viewDir, position, normals.xyz, material, color.rgb);
+            ssrt.rgb = ssr_ssgi(texcoord, viewDir, position, normals.xyz, material, color.rgb);
     #endif
 
-    /* DRAWBUFFERS: 034 */
+    /* DRAWBUFFERS: 0234 */
     gl_FragData[0] = color;
-    gl_FragData[1] = ssrt;
+    gl_FragData[1] = vec4(material.albedo, depth0);
     gl_FragData[2] = ssrt;
+    gl_FragData[3] = ssrt;
 }

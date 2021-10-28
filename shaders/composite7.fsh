@@ -44,7 +44,7 @@ void main()
     prevColor.rgb = max(prevColor.rgb, 1e-5);
 
     #ifdef doTemporal
-        color.rgb = TAA(color.rgb, texcoord, position, 0.9);
+        color.rgb = TAA(color.rgb, colortex0, colortex8, texcoord, position, 0.9);
     #else
         if (length(cameraPosition - previousCameraPosition) <= 1e-5)
         {
