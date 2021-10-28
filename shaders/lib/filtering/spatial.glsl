@@ -4,8 +4,22 @@ vec4 atrous(in vec2 coord, in vec3 c, in vec3 n, in vec3 p, in Material m) // fo
 
     int samples = 4;
     int kernelSize = 4;
-    kernelSize = int(pow(2.0, float(kernelSize)));
-    kernelSize = int(min(m.roughness * kernelSize, float(kernelSize)));
+    kernelSize = int(exp2(float(kernelSize)));
+
+    #ifdef russianRoulette
+        float specChance = min(m.f0, 229.0/255.0);
+        m.albedo = min(m.albedo, 1.0 - specChance);
+        float diffChance = dot(m.albedo, vec3(0.333));
+        float sum = specChance + diffChance;
+        specChance /= sum;
+        diffChance /= sum;
+        bool roulette = interleaved(gl_FragCoord.xy) < specChance;
+        roulette = m.is_metal ? true : roulette;
+
+        kernelSize = roulette ? int(min(m.roughness * kernelSize, float(kernelSize))) : kernelSize;
+    #else
+        kernelSize = int(min(m.roughness * kernelSize, float(kernelSize)));
+    #endif
 
     const float c_phi = 0.1;
     const float n_phi = 0.25;

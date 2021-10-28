@@ -14,10 +14,8 @@ vec3 ssr_ssgi(vec2 coord, vec3 v, vec3 p, vec3 n, Material m, vec3 color)
     {
         
         float specChance = min(m.f0, 229.0/255.0);
-        float specular = specChance;
         vec3 origAlbedo = m.albedo;
         m.albedo = min(m.albedo, 1.0 - specChance);
-        specChance = dot(specChance, 0.333);
         float diffChance = dot(m.albedo, vec3(0.333));
         float sum = diffChance+specChance;
         specChance /= sum;
@@ -86,8 +84,12 @@ vec3 ssr_ssgi(vec2 coord, vec3 v, vec3 p, vec3 n, Material m, vec3 color)
     averagedRayDistance = max(averagedRayDistance, 0.0);
 
     // Thanks to Samuel in ShaderLABS discord server for helping me with specular (hit) reprojection
-    vec2 reprojected_coord;
-    if (m.roughness < 0.4)
-        p += v*averagedRayDistance;
-    return result;//temporal(result, colortex4, p, 1.0);
+    #ifdef doTemporal
+        vec2 reprojected_coord;
+        if (m.roughness < 0.4)
+            p += v*averagedRayDistance;
+        return temporal(result, colortex4, p, 1.0 - frameTime);
+    #else
+        return result;
+    #endif
 }
