@@ -32,7 +32,9 @@ void main()
     vec4 ssrt = vec4(0.0);
     #ifdef doSSRT
         ssrt = getSSRT(texcoord);
-        ssrt = atrous(texcoord, material.albedo, normals, position, material);
+        #ifdef doTemporal
+            ssrt = atrous(texcoord, material.albedo, normals, position, material);
+        #endif
 
         color.rgb = color.rgb*(1.0-material.metalness) + max(ssrt.rgb, 0.0);
         //color.rgb = ssrt.rgb;

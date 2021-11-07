@@ -6,35 +6,44 @@ float getVisibility(in vec3 viewPos, in vec2 coord, in vec3 l)
     vec3 worldPos = viewToWorld(viewPos);
     vec3 shadowPos = worldToShadow(worldPos) * 0.5 + 0.5; // in screen space
 
-    const int pcfSamples = 16;
-    const int blockerSamples = 4; // sample count is actually squared
+    const int pcfSamples = 8;
+    const int blockerSamples = 8;
+    const float bias = 0.00025;
 
     // Average blocker
-    float radius = 100.0;
+    float radius = 60.0 * (shadowMapResolution * 0.0009765625);
     float origRadius = radius;
     float blockerResult = 0.0;
-    for (int x = 0; x < blockerSamples; x++)
-        for (int y = 0; y < blockerSamples; y++)
-        {
-            vec2 offset = (vec2(x, y)+randV2(coord)) / blockerSamples;
-            offset = offset * 2.0 - 1.0; // [-1, 1] range
-            offset = offset * radius / shadowMapResolution;
+    int blockerCount = 0;
+    for (int i = 0; i < blockerSamples; i++)
+    {
+        float ang = 2.4 * i + interleaved(gl_FragCoord.xy)*M_PI2;
+        vec2 offset = vec2(cos(ang), sin(ang));
+        offset = offset * sqrt((i + 0.5 + rand(coord)) / blockerSamples) * radius;
+        offset /= shadowMapResolution;
 
-            blockerResult += texture2D(shadowtex1, shadowPos.xy+offset).r;
+        float sample = texture2D(shadowtex1, shadowPos.xy+offset).r;
+        if (shadowPos.z - sample > bias)
+        {
+            blockerResult += sample;
+            blockerCount++;
         }
-    blockerResult /= blockerSamples*blockerSamples;
+    }
+    blockerResult /= blockerCount;
     // Now, we calculate the penumbra
-    radius = (shadowPos.z-blockerResult) * origRadius / blockerResult;
-    radius = max(radius, 1.0); // looks bad without blur
+    radius = (shadowPos.z-blockerResult) * radius / blockerResult;
+    radius = clamp(radius, 1.0, origRadius); // looks bad without blur
 
     // The PCF is simple due to performance reason
     float result = 0.0;
     for (int i = 0; i < pcfSamples; i++)
     {
-        vec2 offset = randV2(coord) * 2.0 - 1.0;
-        offset = offset * 2.0 / shadowMapResolution;
+        float ang = 2.4 * i + interleaved(gl_FragCoord.xy)*M_PI2;
+        vec2 offset = vec2(cos(ang), sin(ang));
+        offset = offset * sqrt((i + 0.5 + rand(coord)) / pcfSamples) * radius;
+        offset /= shadowMapResolution;
 
-        result += step(shadowPos.z - texture2D(shadowtex1, shadowPos.xy+offset).r, 0.001);
+        result += step(shadowPos.z - texture2D(shadowtex1, shadowPos.xy+offset).r, bias);
     }
     
     return result / pcfSamples;

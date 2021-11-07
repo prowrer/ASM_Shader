@@ -2,7 +2,7 @@ void refineIntersection(in float delta, in vec3 r, inout vec2 coord, inout vec3 
 {
     const float BINARY_REFINEMENT_STEPS = 4;
 
-    float BINARY_STEP = delta; // decrease by half every iteration
+    float BINARY_STEP = length(p - p_s); // decrease by half every iteration
     for (int j = 0; j < BINARY_REFINEMENT_STEPS; j++)
     {
         if (delta > 0.0)
@@ -53,9 +53,8 @@ bool intersect(inout vec3 p, inout vec2 coord, in vec3 r, in vec3 n, in int step
         float delta = p_s.z - p.z;
 
         vec3 orig2p = normalize(p_s - orig);
-        float ray_alignment = dot(n_s, orig2p);
 
-        if (delta >= 0.0 && ray_alignment < 0.0)
+        if (delta >= 0.0)
         {
             // Binary refinement, sum good stuf
             refineIntersection(delta, r, coord, p, p_s);

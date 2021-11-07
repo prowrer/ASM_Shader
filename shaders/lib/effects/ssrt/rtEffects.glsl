@@ -4,8 +4,8 @@
 vec3 ssr_ssgi(vec2 coord, vec3 v, vec3 p, vec3 n, Material m, vec3 color)
 {
     const int samples = 1;
-    const int steps = 30;
-    const float stepSize = 1.0;
+    const int steps = 60;
+    const float stepSize = 0.1;
 
     vec3 result = vec3(0.0);
     float averagedRayDistance = 0.0;

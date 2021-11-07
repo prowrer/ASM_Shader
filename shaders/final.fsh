@@ -16,7 +16,7 @@ void main()
 
     // Auto exposure
     vec3 color_mip = max(textureLod(colortex0, texcoord, 1000.0).rgb, 0.0);
-    float avgBrightness = clamp(max(max(color_mip.r, color_mip.g), color_mip.b), 0.1, 10.0);
+    float avgBrightness = clamp(max(max(color_mip.r, color_mip.g), color_mip.b), 0.25, 10.0);
     color *= 1.0 / (avgBrightness);
 
     color.rgb = aces_approx(color.rgb);
