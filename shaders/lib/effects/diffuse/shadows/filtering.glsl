@@ -32,7 +32,6 @@ float getVisibility(in vec3 viewPos, in vec2 coord, in vec3 l)
     blockerResult /= blockerCount;
     // Now, we calculate the penumbra
     radius = (shadowPos.z-blockerResult) * radius / blockerResult;
-    radius = clamp(radius, 1.0, origRadius); // looks bad without blur
 
     // The PCF is simple due to performance reason
     float result = 0.0;

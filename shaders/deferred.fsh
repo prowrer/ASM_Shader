@@ -16,6 +16,7 @@ const float ambientOcclusionLevel = 0.0;
 */
 
 #include "/lib/constants.glsl"
+#include "/lib/settings.glsl"
 #include "/lib/randomNumber/random.glsl"
 #include "/lib/math/approximates.glsl"
 
@@ -56,7 +57,11 @@ void main()
 
         // Calculate specular highlight
         color.rgb = specularHighlight(viewDir, sunDir, normals.xyz, surface_mat, visibility, color.rgb);
-        color *= min(visibility + ambientLight*gtao(texcoord, normals.rgb, position, viewDir) + surface_mat.metalness, 1.0);
+        #ifdef russianRoulette // change ambient light is zero when we're doing global illumination
+            color *= min(visibility + surface_mat.metalness, 1.0);
+        #else
+            color *= min(visibility + ambientLight*gtao(texcoord, normals.rgb, position, viewDir) + surface_mat.metalness, 1.0);
+        #endif
 
         // Apply emissive
         float luminosity = surface_mat.emission;

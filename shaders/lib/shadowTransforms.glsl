@@ -4,6 +4,7 @@ uniform sampler2D shadowtex0;
 uniform sampler2D shadowtex1;
 
 uniform mat4 shadowModelView;
+uniform mat4 shadowModelViewInverse;
 
 uniform mat4 shadowProjection;
 uniform mat4 shadowProjectionInverse;

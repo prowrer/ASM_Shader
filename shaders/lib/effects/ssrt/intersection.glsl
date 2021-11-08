@@ -48,11 +48,12 @@ bool intersect(inout vec3 p, inout vec2 coord, in vec3 r, in vec3 n, in int step
 
         float depth_s = getDepth(coord);
         vec3 p_s = screenToView(coord, depth_s);
-        vec3 n_s = getNormals(coord).rgb;
+        vec3 n_s = normalize(cross(dFdx(p_s), dFdy(p_s)));
 
         float delta = p_s.z - p.z;
 
         vec3 orig2p = normalize(p_s - orig);
+        float ray_alignment = dot(orig2p, n_s);
 
         if (delta >= 0.0)
         {
@@ -61,7 +62,7 @@ bool intersect(inout vec3 p, inout vec2 coord, in vec3 r, in vec3 n, in int step
             return true;
         }
         
-        stepSize *= 2.0;
+        stepSize *= 1.5;
     }
 
     return false;

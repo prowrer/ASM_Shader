@@ -2,8 +2,8 @@ vec4 atrous(in vec2 coord, in vec3 c, in vec3 n, in vec3 p, in Material m) // fo
 {
     vec2 step_ = 1.0 / ScreenResolution;
 
-    int samples = 4;
-    int kernelSize = 4;
+    int samples = 2;
+    int kernelSize = 3;
     kernelSize = int(exp2(float(kernelSize)));
 
     #ifdef russianRoulette
