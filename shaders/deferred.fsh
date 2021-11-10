@@ -58,9 +58,17 @@ void main()
         // Calculate specular highlight
         color.rgb = specularHighlight(viewDir, sunDir, normals.xyz, surface_mat, visibility, color.rgb);
         #ifdef russianRoulette // change ambient light is zero when we're doing global illumination
-            color *= min(visibility + surface_mat.metalness, 1.0);
+            #ifdef doSSRT
+                color *= max(visibility - surface_mat.metalness, 0.0);
+            #else
+                color *= min(visibility + surface_mat.metalness, 1.0);
+            #endif
         #else
-            color *= min(visibility + ambientLight*gtao(texcoord, normals.rgb, position, viewDir) + surface_mat.metalness, 1.0);
+            #ifdef doSSRT
+                color *= max(visibility + ambientLight*gtao(texcoord, normals.rgb, position, viewDir) - surface_mat.metalness, 0.0);
+            #else
+                color *= min(visibility + ambientLight*gtao(texcoord, normals.rgb, position, viewDir) + surface_mat.metalness, 1.0);
+            #endif
         #endif
 
         // Apply emissive

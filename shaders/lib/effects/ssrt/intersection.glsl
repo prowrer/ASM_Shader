@@ -40,29 +40,31 @@ bool intersect(inout vec3 p, inout vec2 coord, in vec3 r, in vec3 n, in int step
 
     // The actual code
     vec3 orig = p;
+    vec3 rayDir = r * stepSize;
+    p += rayDir;
     for (int i = 0; i < stepCount; i++)
     {
-        p += r * stepSize * (interleaved(gl_FragCoord.xy) + 0.5);
         coord = viewToClip(p).xy * 0.5 + 0.5;
         if (coord.x > 1.0 || coord.x < 0.0 || coord.y > 1.0 || coord.y < 0.0) break;
 
         float depth_s = getDepth(coord);
         vec3 p_s = screenToView(coord, depth_s);
-        vec3 n_s = normalize(cross(dFdx(p_s), dFdy(p_s)));
+        vec3 n_s = getNormals(coord).rgb;
 
         float delta = p_s.z - p.z;
 
         vec3 orig2p = normalize(p_s - orig);
-        float ray_alignment = dot(orig2p, n_s);
+        float ray_alignment = dot(r, n_s);
 
-        if (delta >= 0.0)
+        if (delta >= 0.0 && ray_alignment < 0.0)
         {
             // Binary refinement, sum good stuf
             refineIntersection(delta, r, coord, p, p_s);
             return true;
         }
         
-        stepSize *= 1.5;
+        rayDir *= interleaved(gl_FragCoord.xy)*0.5 + 1.0;
+        p += rayDir;
     }
 
     return false;
