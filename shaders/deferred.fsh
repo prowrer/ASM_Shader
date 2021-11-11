@@ -26,8 +26,6 @@ const float ambientOcclusionLevel = 0.0;
 #include "/lib/materials.glsl"
 #include "/lib/effects/brdf.glsl"
 
-#include "/lib/effects/specular/highlight.glsl"
-
 #include "/lib/transforms.glsl"
 #include "/lib/shadowTransforms.glsl"
 
@@ -51,31 +49,34 @@ void main()
     
     if (depth0 < 1.0)
     {
-        // Calculate shadows
-        float visibility = getVisibility(position, texcoord, sunDir);
-        visibility = min(visibility, orenNayar(viewDir, normals.xyz, sunDir, surface_mat.roughness));
+        // Diffuse/Shadows
+        float shadows = getVisibility(position, texcoord, sunDir);
+        float diffuse = orenNayar(viewDir, normals.xyz, sunDir, surface_mat.roughness)*shadows;
 
-        // Calculate specular highlight
-        color.rgb = specularHighlight(viewDir, sunDir, normals.xyz, surface_mat, visibility, color.rgb);
-        #ifdef russianRoulette // change ambient light is zero when we're doing global illumination
-            #ifdef doSSRT
-                color *= max(visibility - surface_mat.metalness, 0.0);
+        // Specular
+        vec3 specular = cookTorrance(viewDir, normals.xyz, sunDir, surface_mat.albedo, surface_mat.roughness, surface_mat.f0);
+
+        // Combine into direct lighting
+        #ifdef doSSRT
+            #ifdef russianRoulette
+                diffuse = diffuse * (1.0 - surface_mat.metalness);
             #else
-                color *= min(visibility + surface_mat.metalness, 1.0);
+                diffuse = min(diffuse+ambientLight, 1.0) * (1.0 - surface_mat.metalness);
             #endif
         #else
-            #ifdef doSSRT
-                color *= max(visibility + ambientLight*gtao(texcoord, normals.rgb, position, viewDir) - surface_mat.metalness, 0.0);
-            #else
-                color *= min(visibility + ambientLight*gtao(texcoord, normals.rgb, position, viewDir) + surface_mat.metalness, 1.0);
-            #endif
+            diffuse = min(diffuse+ambientLight, 1.0) * (1.0 - surface_mat.metalness);
         #endif
+        diffuse *= 120e3; // apply accurate sun lux value
+        specular *= 120e3; // apply accurate sun lux value
+        color.rgb = diffuse*color.rgb + specular * shadows * max(0.0, dot(normals.xyz, sunDir));
 
         // Apply emissive
-        float luminosity = surface_mat.emission;
-        luminosity = luminosity <= 0.996078431 ? luminosity / 0.996078431 * 6.0 : 0.0;
-        color.rgb += luminosity * surface_mat.albedo.rgb; // since lights are additive, simply add
+        float lux = surface_mat.emission;
+        lux = lux <= 0.996078431 ? lux / 0.996078431 * 5800.0 : 0.0;
+        color.rgb += lux * surface_mat.albedo.rgb; // since lights are additive, simply add
     }
+    else
+        color.rgb *= 20e3; // apply "accurate" sky lux value
 
     /* DRAWBUFFERS: 0 */
     gl_FragData[0] = color;

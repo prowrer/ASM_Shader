@@ -99,9 +99,6 @@ vec3 ssr_ssgi(vec2 coord, vec3 v, vec3 p, vec3 n, Material m, vec3 color)
     averagedRayDistance /= samples;
     averagedRayDistance = max(averagedRayDistance, 0.0);
 
-    // clamp the result to get rid of fireflies
-    result = clamp(result, 0.0, 6.0);
-
     // Thanks to Samuel in ShaderLABS discord server for helping me with specular (hit) reprojection
     #ifdef doTemporal
         vec2 reprojected_coord;

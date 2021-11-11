@@ -28,9 +28,7 @@ vec3 bloom(in vec2 coord, in vec3 color)
     {
         vec3 sample = max(textureLod(colortex0, coord, ((i+interleaved(gl_FragCoord.xy))/samples) * lod).rgb, 0.0);
 
-        float weights = length(sample - color);
-
-        result += max(sample * weights * intensity, 0.0);
+        result += max(sample * intensity, 0.0);
     }
     
     return color + max(result / samples, 0.0);

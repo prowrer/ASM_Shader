@@ -50,10 +50,10 @@ void main()
         {
             if (prevColor.a < 1000.0)
             {
-                prevColor.rgb += color.rgb;
+                prevColor.rgb += color.rgb / 1000.0;
                 prevColor.a++;
             }
-            color.rgb = prevColor.rgb / prevColor.a;
+            color.rgb = prevColor.rgb * 1000.0 / prevColor.a;
         }
         else
             prevColor = vec4(0);

@@ -6,13 +6,12 @@ float getVisibility(in vec3 viewPos, in vec2 coord, in vec3 l)
     vec3 worldPos = viewToWorld(viewPos);
     vec3 shadowPos = worldToShadow(worldPos) * 0.5 + 0.5; // in screen space
 
-    const int pcfSamples = 16;
+    const int pcfSamples = 8;
     const int blockerSamples = 8;
     const float bias = 0.00025;
 
     // Average blocker
     float radius = 120.0 * (shadowMapResolution * 0.0009765625);
-    float origRadius = radius;
     float blockerResult = 0.0;
     int blockerCount = 0;
     for (int i = 0; i < blockerSamples; i++)
@@ -31,7 +30,7 @@ float getVisibility(in vec3 viewPos, in vec2 coord, in vec3 l)
     }
     blockerResult /= blockerCount;
     // Now, we calculate the penumbra
-    radius = (shadowPos.z-blockerResult) * radius / blockerResult;
+    radius = min((shadowPos.z-blockerResult) * radius / blockerResult, radius);
 
     // The PCF is simple due to performance reason
     float result = 0.0;
