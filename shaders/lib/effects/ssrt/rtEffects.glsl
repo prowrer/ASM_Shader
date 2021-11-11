@@ -4,7 +4,11 @@
 vec3 ssr_ssgi(vec2 coord, vec3 v, vec3 p, vec3 n, Material m, vec3 color)
 {
     const int samples = 1;
-    const int bounces = 4;
+    #ifdef MULTI_BOUNCE
+        const int bounces = 4;
+    #else
+        const int bounces = 1;
+    #endif
     const int steps = 30;
     const float stepSize = 0.1;
 
