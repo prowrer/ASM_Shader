@@ -38,8 +38,7 @@ vec3 ssr_ssgi(vec2 coord, vec3 v, vec3 p, vec3 n, Material m, vec3 color)
             #else
                 bool roulette = true;
             #endif
-            if (b > 0)
-                energy *= roulette ? (hitMat.is_metal ? origAlbedo : vec3(1)) : hitMat.albedo;
+            energy *= roulette ? (hitMat.is_metal ? origAlbedo : vec3(1)) : hitMat.albedo;
             vec3 r = ImportanceSampleGGX(hitNorm, randV2(coord), hitMat.roughness);
             r = roulette ? reflect(prevDir, r) : ImportanceSampleCosine(hitNorm, randV2(coord)); // don't reflect when diffuse because it'll go beneath the surface
 
@@ -81,8 +80,7 @@ vec3 ssr_ssgi(vec2 coord, vec3 v, vec3 p, vec3 n, Material m, vec3 color)
                         weight = vec3(1.0);
                     #endif
 
-                if (b > 0)
-                    energy *= weight;
+                energy *= weight;
 
                 vec3 hitColor = getColor(hitCoord).rgb;
                 result += energy * hitColor;
