@@ -19,7 +19,7 @@ vec3 bloom(in vec2 coord, in vec3 color)
 {
     const int samples = 4;
     const float res_percent = 0.125;
-    const float intensity = 0.25;
+    const float intensity = 0.5;
 
     float lod = 1.0 / (floor(viewHeight * res_percent) / viewHeight);
 

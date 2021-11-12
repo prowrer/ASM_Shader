@@ -61,10 +61,10 @@ void main()
             #ifdef russianRoulette
                 diffuse = diffuse * (1.0 - surface_mat.metalness);
             #else
-                diffuse = min(diffuse+ambientLight, 1.0) * (1.0 - surface_mat.metalness);
+                diffuse = min(diffuse+ambientLight*gtao(texcoord, normals.xyz, position, viewDir), 1.0) * (1.0 - surface_mat.metalness);
             #endif
         #else
-            diffuse = min(diffuse+ambientLight, 1.0) * (1.0 - surface_mat.metalness);
+            diffuse = min(diffuse+ambientLight*gtao(texcoord, normals.xyz, position, viewDir), 1.0) * (1.0 - surface_mat.metalness);
         #endif
         diffuse *= 120e3; // apply accurate sun lux value
         specular *= 120e3; // apply accurate sun lux value

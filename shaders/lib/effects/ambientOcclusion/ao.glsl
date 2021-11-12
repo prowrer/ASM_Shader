@@ -1,8 +1,8 @@
 float gtao(in vec2 coord, in vec3 normal_p, vec3 pos_p, vec3 viewDir)
 {
     const int directions = 2;
-    const int steps = 4;
-    const float radius = 0.25; // in screen space
+    const int steps = 2;
+    const float radius = 0.1; // in screen space
 
     float result = 0.0;
     float jitter_i = interleaved(gl_FragCoord.xy);
@@ -28,7 +28,7 @@ float gtao(in vec2 coord, in vec3 normal_p, vec3 pos_p, vec3 viewDir)
             sampleUV = coord - offset*radius * ranged;
             pos_s = screenToView(sampleUV, getDepth(sampleUV, 1));
             vec3 horizonVec2 = normalize(pos_s - pos_p);
-
+            
             h1 = min(h1, fastAcos(dot(horizonVec1, -viewDir)));
             h2 = min(h2, fastAcos(dot(horizonVec2, -viewDir)));
         }

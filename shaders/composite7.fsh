@@ -60,10 +60,10 @@ void main()
     #endif
 
 
-    /* DRAWBUFFERS: 081 */
+    /* DRAWBUFFERS: 08 */
     gl_FragData[0] = color;
     #ifdef doTemporal
-        gl_FragData[1] = vec4(color.rgb, depth);
+        gl_FragData[1] = vec4(color.rgb, prevColor.a);
     #else
         gl_FragData[1] = prevColor;
     #endif

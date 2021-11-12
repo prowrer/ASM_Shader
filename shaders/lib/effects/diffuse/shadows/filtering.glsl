@@ -18,7 +18,7 @@ float getVisibility(in vec3 viewPos, in vec2 coord, in vec3 l)
     {
         float ang = 2.4 * i + rand(coord)*M_PI2;
         vec2 offset = vec2(cos(ang), sin(ang));
-        offset = offset * interleaved(gl_FragCoord.xy) * radius;
+        offset = offset * (i+rand(coord))/blockerSamples * radius;
         offset /= shadowMapResolution;
 
         float sample = texture2D(shadowtex1, shadowPos.xy+offset).r;
@@ -38,7 +38,7 @@ float getVisibility(in vec3 viewPos, in vec2 coord, in vec3 l)
     {
         float ang = 2.4 * i + rand(coord)*M_PI2;
         vec2 offset = vec2(cos(ang), sin(ang));
-        offset = offset * interleaved(gl_FragCoord.xy) * radius;
+        offset = offset * (i+rand(coord))/pcfSamples * radius;
         offset /= shadowMapResolution;
 
         result += step(shadowPos.z - texture2D(shadowtex1, shadowPos.xy+offset).r, bias);

@@ -36,7 +36,7 @@ void main()
             ssrt = atrous(texcoord, material.albedo, normals, position, material);
         #endif
 
-        color.rgb = color.rgb*(1.0-material.metalness) + max(ssrt.rgb * material.albedo, 0.0);
+        color.rgb = color.rgb*(1.0-material.metalness) + max(ssrt.rgb, 0.0);
         //color.rgb = ssrt.rgb;
     #endif
 

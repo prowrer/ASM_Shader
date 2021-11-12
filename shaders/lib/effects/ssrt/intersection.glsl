@@ -49,14 +49,12 @@ bool intersect(inout vec3 p, inout vec2 coord, in vec3 r, in vec3 n, in int step
 
         float depth_s = getDepth(coord);
         vec3 p_s = screenToView(coord, depth_s);
-        vec3 n_s = getNormals(coord).rgb;
 
         float delta = p_s.z - p.z;
 
         vec3 orig2p = normalize(p_s - orig);
-        float ray_alignment = dot(r, n_s);
 
-        if (delta >= 0.0 && ray_alignment < 0.0)
+        if (delta >= 0.0)
         {
             // Binary refinement, sum good stuf
             refineIntersection(delta, r, coord, p, p_s);
