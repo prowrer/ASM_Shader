@@ -17,7 +17,7 @@ vec3 temporal_SSRT(vec3 currentColor, sampler2D previousBuffer, vec3 p, vec3 v, 
 	prevDepth = -log(prevDepth); // we have to decode the depth, which was encoded by doing exp(-depth)
 	vec3 prevPosition = screenToView(prevTexcoord, prevDepth);
 	prevPosition += doOffset ? v*avgDist : vec3(0.0); // we have to apply offset for specular reprojection
-	vec3 prevColor = texture2D(previousBuffer, prevTexcoord).rgb;
+	vec3 prevColor = max(texture2D(previousBuffer, prevTexcoord).rgb, 0.0);
 
 	const float p_phi = 0.1;
 
@@ -25,7 +25,7 @@ vec3 temporal_SSRT(vec3 currentColor, sampler2D previousBuffer, vec3 p, vec3 v, 
 	
 	// Position weighting
 	vec3 t = prevPosition - p;
-	weights *= max(exp(-dot(t, t) / p_phi), 0.0);
+	weights *= exp(-dot(t, t) / p_phi);
 
 	// Out of bounds
 	weights *= float(prevTexcoord.x < 1.0 && prevTexcoord.x > 0.0 && prevTexcoord.y < 1.0 && prevTexcoord.y > 0.0);
