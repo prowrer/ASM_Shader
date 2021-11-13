@@ -44,7 +44,7 @@ vec3 ssr_ssgi(vec2 coord, vec3 v, vec3 p, vec3 n, Material m, vec3 color)
 
             // Intersection
             vec3 origin = hitPos;
-            bool foundHit = intersect(hitPos, hitCoord, r, hitNorm, steps, stepSize);
+            bool foundHit = intersect(hitPos, hitCoord, r, steps, stepSize);
 
             if (foundHit)
             {
@@ -92,6 +92,8 @@ vec3 ssr_ssgi(vec2 coord, vec3 v, vec3 p, vec3 n, Material m, vec3 color)
                 prevDir = normalize(hitPos - origin);
                 hitNorm = getNormals(hitCoord).rgb;
             }
+            else
+                break; // break the bounce loop since we got nothing
         }
     }
     result /= samples;
@@ -101,6 +103,7 @@ vec3 ssr_ssgi(vec2 coord, vec3 v, vec3 p, vec3 n, Material m, vec3 color)
 
     // Thanks to Samuel in ShaderLABS discord server for helping me with specular (hit) reprojection
     #ifdef doTemporal
+        //return result;
         vec2 reprojected_coord;
         if (m.roughness < 0.4)
             p += v*averagedRayDistance;

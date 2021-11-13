@@ -21,9 +21,9 @@ vec4 atrous(in vec2 coord, in vec3 c, in vec3 n, in vec3 p, in Material m) // fo
         kernelSize = int(min(m.roughness * kernelSize, float(kernelSize)));
     #endif
 
-    const float c_phi = 0.1;
-    const float n_phi = 0.25;
-    const float p_phi = 0.5;
+    const float c_phi = 0.005;
+    const float n_phi = 0.005;
+    const float p_phi = 0.01;
 
     float sum_w = 0.0;
     vec4 result = vec4(0.0);
@@ -51,17 +51,17 @@ vec4 atrous(in vec2 coord, in vec3 c, in vec3 n, in vec3 p, in Material m) // fo
 
             vec3 t = c - c_s;
             float c_w = dot(t, t);
-            c_w = min(exp(-c_w / c_phi), 1.0);
+            c_w = exp(-c_w / c_phi);
 
             t = n - n_s;
             float n_w = dot(t, t);
-            n_w = min(exp(-n_w / n_phi), 1.0);
+            n_w = exp(-n_w / n_phi);
 
             t = p - p_s;
             float p_w = dot(t, t);
-            p_w = min(exp(-p_w / p_phi), 1.0);
+            p_w = exp(-p_w / p_phi);
 
-            float weights = max(c_w * p_w * n_w, 1e-5);
+            float weights = c_w * p_w * n_w;
 
             sum_w += weights;
             result += getSSRT(newUV) * weights;

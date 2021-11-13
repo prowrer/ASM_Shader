@@ -28,7 +28,7 @@ void refineIntersection(in float delta, in vec3 r, inout vec2 coord, inout vec3 
     }
 }
 
-bool intersect(inout vec3 p, inout vec2 coord, in vec3 r, in vec3 n, in int stepCount, in float stepSize)
+bool intersect(inout vec3 p, inout vec2 coord, in vec3 r, in int stepCount, in float stepSize)
 {
     /*
     P must be in view space and is a position

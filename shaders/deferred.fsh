@@ -11,7 +11,6 @@ vec2 ScreenResolution = vec2(viewWidth, viewHeight);
 
 /*
 const int colortex0Format = RGBA16F;
-const bool colortex0MipmapEnabled = true;
 const float ambientOcclusionLevel = 0.0;
 */
 

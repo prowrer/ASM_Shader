@@ -1,16 +1,14 @@
 float gtao(in vec2 coord, in vec3 normal_p, vec3 pos_p, vec3 viewDir)
 {
-    const int directions = 2;
+    const int directions = 4;
     const int steps = 2;
     const float radius = 0.1; // in screen space
 
     float result = 0.0;
-    float jitter_i = interleaved(gl_FragCoord.xy);
-    float jitter_j = rand(coord);
     for (int i = 0; i < directions; i++)
     {
         // Offset
-        float ang = (i+jitter_i) / directions * M_PI2;
+        float ang = 2.4 * i + rand(coord) * M_PI2;
         vec2 offset = vec2(cos(ang), sin(ang));
         vec2 offsetDivRes = offset / ScreenResolution;
 
@@ -19,7 +17,7 @@ float gtao(in vec2 coord, in vec3 normal_p, vec3 pos_p, vec3 viewDir)
         float h2 = M_PI2;
         for (int j = 0; j < steps; j++)
         {
-            float ranged = (j+jitter_j)/steps;
+            float ranged = sqrt((j+interleaved(gl_FragCoord.xy))/steps);
 
             vec2 sampleUV = coord + offset*radius * ranged;
             vec3 pos_s = screenToView(sampleUV, getDepth(sampleUV, 1));

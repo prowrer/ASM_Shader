@@ -4,9 +4,16 @@
 varying vec2 texcoord;
 uniform float viewHeight;
 uniform float viewWidth;
+uniform int frameCounter;
 vec2 ScreenResolution = vec2(viewWidth, viewHeight);
 
+// We need to enable mipmapping for colortex0 for use in bloom
+/*
+const bool colortex0MipmapEnabled = true;
+*/
+
 #include "/lib/constants.glsl"
+#include "/lib/randomNumber/random.glsl"
 #include "/lib/settings.glsl"
 
 #include "/lib/framebuffers.glsl"
@@ -40,13 +47,32 @@ float getExposureFromSceneAverage()
 
     return 1.0 / (1.2 * exp2(EV100));
 }
+vec3 bloom(in vec2 coord, in vec3 color)
+{
+    const int samples = 8;
+    const float res_percent = 0.125;
+    const float intensity = 0.5;
+
+    float lod = 1.0 / (floor(viewHeight * res_percent) / viewHeight);
+
+    vec3 result = vec3(0.0);
+    for (int i = 0; i < samples; i++)
+    {
+        vec3 sample = max(textureLod(colortex0, coord, ((i+interleaved(gl_FragCoord.xy))/samples) * lod).rgb, 0.0);
+
+        result += max(sample * intensity, 0.0);
+    }
+    
+    return color + max(result / samples, 0.0);
+}
 
 void main()
 {
     vec4 color = getColor(texcoord);
 
     // Auto exposure
-    color.rgb *= getExposureFromSceneAverage();//getSaturationBasedExposure(16.0, 1.0/100.0, 500.0);
+    color.rgb = bloom(texcoord, color.rgb);
+    color.rgb *= getExposureFromSceneAverage();//getSaturationBasedExposure(16.0, 1.0/100.0, 1000.0);
 
     color.rgb = aces_approx(color.rgb);
     color.rgb = pow(color.rgb, vec3(1.0 / 2.2));
