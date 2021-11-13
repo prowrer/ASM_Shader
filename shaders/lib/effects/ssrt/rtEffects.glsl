@@ -105,9 +105,9 @@ vec3 ssr_ssgi(vec2 coord, vec3 v, vec3 p, vec3 n, Material m, vec3 color)
     #ifdef doTemporal
         //return result;
         vec2 reprojected_coord;
-        if (m.roughness < 0.4)
-            p += v*averagedRayDistance;
-        return temporal(result, colortex4, p, 1.0 - frameTime);
+        bool doOffset = m.roughness < 0.3;
+        p += doOffset ? v*averagedRayDistance : vec3(0.0);
+        return temporal_SSRT(result, colortex4, p, v, averagedRayDistance, doOffset, 1.0 - frameTime);
     #else
         return result;
     #endif

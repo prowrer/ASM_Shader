@@ -15,6 +15,13 @@ const int colortex3Format = RGBA16F;
 const int colortex4Format = RGBA16F;
 const bool colortex4Clear = false;
 */
+// We're going to need to store previous depthtex value for deghosting. We're going to use colortex5.r for that
+// we're going to set it's format to R16... hopefully the loss of precision is not too bad
+// and also disable clearing
+/*
+const int colortex5Format = R16;
+const bool colortex5Clear = false;
+*/
 
 #include "/lib/constants.glsl"
 #include "/lib/randomNumber/random.glsl"
@@ -52,9 +59,9 @@ void main()
             ssrt.rgb = ssr_ssgi(texcoord, viewDir, position, normals.xyz, material, color.rgb);
     #endif
 
-    /* DRAWBUFFERS: 0234 */
+    /* DRAWBUFFERS: 0345 */
     gl_FragData[0] = color;
-    gl_FragData[1] = vec4(material.albedo, depth0);
+    gl_FragData[1] = ssrt;
     gl_FragData[2] = ssrt;
-    gl_FragData[3] = ssrt;
+    gl_FragData[3] = vec4(exp(-depth0), 0.0, 0.0, 0.0);
 }

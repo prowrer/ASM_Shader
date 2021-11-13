@@ -23,7 +23,7 @@ vec4 atrous(in vec2 coord, in vec3 c, in vec3 n, in vec3 p, in Material m) // fo
 
     const float c_phi = 0.005;
     const float n_phi = 0.005;
-    const float p_phi = 0.01;
+    const float p_phi = 0.5;
 
     float sum_w = 0.0;
     vec4 result = vec4(0.0);

@@ -10,13 +10,27 @@ vec2 getPrevCoord(in vec3 viewPos)
 	return nvecw(gbufferPreviousProjection * worldSpace).xy * 0.5 + 0.5;
 }
 
-vec3 temporal(vec3 currentColor, sampler2D previousBuffer, vec3 p, float strength)
+vec3 temporal_SSRT(vec3 currentColor, sampler2D previousBuffer, vec3 p, vec3 v, float avgDist, bool doOffset, float strength)
 {
 	vec2 prevTexcoord = getPrevCoord(p);
+	float prevDepth = getPreviousBufferValues(prevTexcoord).r;
+	prevDepth = -log(prevDepth); // we have to decode the depth, which was encoded by doing exp(-depth)
+	vec3 prevPosition = screenToView(prevTexcoord, prevDepth);
+	prevPosition += doOffset ? v*avgDist : vec3(0.0); // we have to apply offset for specular reprojection
 	vec3 prevColor = texture2D(previousBuffer, prevTexcoord).rgb;
 
+	const float p_phi = 0.1;
+
 	float weights = strength;
+	
+	// Position weighting
+	vec3 t = prevPosition - p;
+	weights *= max(exp(-dot(t, t) / p_phi), 0.0);
+
+	// Out of bounds
 	weights *= float(prevTexcoord.x < 1.0 && prevTexcoord.x > 0.0 && prevTexcoord.y < 1.0 && prevTexcoord.y > 0.0);
+
+	// Do the mix
 	currentColor = mix(currentColor, prevColor, weights);
 
 	return currentColor;

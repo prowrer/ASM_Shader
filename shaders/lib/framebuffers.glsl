@@ -3,7 +3,7 @@ uniform sampler2D colortex1; // normals
 uniform sampler2D colortex2; // albedo
 uniform sampler2D colortex3; // SSRT
 uniform sampler2D colortex4; // Previous SSRT buffer, clearing disabled
-uniform sampler2D colortex5; // shadow map layers (3, rgb channel respective)
+uniform sampler2D colortex5; // Previous buffer values (depth, ?, ?, ?)
 uniform sampler2D colortex8; // Previous main buffer, clearing disabled
 uniform sampler2D colortex9; // specular
 
@@ -28,7 +28,7 @@ vec4 getPreviousSSRT(in vec2 coord)
 {
     return texture2D(colortex4, coord);
 }
-vec4 getSMLayers(in vec2 coord)
+vec4 getPreviousBufferValues(in vec2 coord)
 {
     return texture2D(colortex5, coord);
 }
