@@ -46,12 +46,25 @@ const bool colortex5Clear = false;
 void main()
 {
     float depth0 = getDepth(texcoord); // no exclusion
+    float depth1 = getDepth(texcoord, 1); // excluded translucent (ie. water, stained glass) and particles
     vec3 position = screenToView(texcoord, depth0);
     vec3 viewDir = normalize(position);
 
     vec4 normals = getNormals(texcoord);
     vec4 color = getColor(texcoord);
     Material material = getMaterialProperties(texcoord);
+
+    // Water absorption
+    if (depth1 > depth0 && depth1 < 1.0) // 0-1 = close to far, so depth1 would have a higher value when there is water (or other stuff excluded in depth1, but idc)
+    {
+        vec3 fogColor = vec3(0.4, 0.07, 0.03);//vec3(0.1, 0.25, 0.4);
+
+        float fogDist = length(screenToView(texcoord, depth1) - position);
+
+        vec3 absorption = exp(-fogColor * fogDist);
+
+        color.rgb *= absorption;
+    }
 
     vec4 ssrt = vec4(0);
     #ifdef doSSRT
