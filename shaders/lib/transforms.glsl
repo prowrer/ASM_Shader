@@ -14,6 +14,14 @@ vec3 screenToView(in vec2 coord, in float depth)
 
     return pos.xyz;
 }
+vec3 screenToView(in vec3 screenVec)
+{
+    vec4 pos = vec4(screenVec * 2.0 - 1.0, 1.0);
+    pos = gbufferProjectionInverse * pos;
+    pos /= pos.w;
+
+    return pos.xyz;
+}
 vec3 viewToClip(in vec3 viewVec) // we are just going to expect that people are going to do 0.5f(x) + 0.5
 {
     return nvecw(gbufferProjection * vec4(viewVec, 1.0));

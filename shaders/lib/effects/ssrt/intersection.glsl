@@ -61,7 +61,7 @@ bool intersect(inout vec3 p, inout vec2 coord, in vec3 r, in int stepCount, in f
             return true;
         }
         
-        rayDir *= interleaved(gl_FragCoord.xy)*0.5 + 1.0;
+        rayDir *= interleaved(gl_FragCoord.xy) + 1.0;
         p += rayDir;
     }
 

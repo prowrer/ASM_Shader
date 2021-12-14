@@ -69,10 +69,11 @@ vec3 bloom(in vec2 coord, in vec3 color)
 void main()
 {
     vec4 color = getColor(texcoord);
+    color.rgb = bloom(texcoord, color.rgb);
 
     // Auto exposure
-    color.rgb = bloom(texcoord, color.rgb);
-    color.rgb *= getExposureFromSceneAverage();//getSaturationBasedExposure(16.0, 1.0/100.0, 1000.0);
+    color.rgb *= getExposureFromSceneAverage();
+    //color.rgb *= getSaturationBasedExposure(16.0, 1.0/100.0, 1000.0);
 
     color.rgb = aces_approx(color.rgb);
     color.rgb = pow(color.rgb, vec3(1.0 / 2.2));

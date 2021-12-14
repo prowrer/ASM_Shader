@@ -9,8 +9,8 @@ vec3 ssr_ssgi(vec2 coord, vec3 v, vec3 p, vec3 n, Material m, vec3 color)
     #else
         const int bounces = 1;
     #endif
-    const int steps = 30;
-    const float stepSize = 0.1;
+    const int steps = 100;
+    float stepSize = 0.1;
 
     vec3 result = vec3(0.0);
     float averagedRayDistance = 0.0;
@@ -38,7 +38,7 @@ vec3 ssr_ssgi(vec2 coord, vec3 v, vec3 p, vec3 n, Material m, vec3 color)
             #else
                 bool roulette = true;
             #endif
-            energy *= roulette ? (hitMat.is_metal ? origAlbedo : vec3(1)) : hitMat.albedo;
+            energy *= roulette ? (hitMat.is_metal ? vec3(1) : vec3(1)) : hitMat.albedo;
             vec3 r = ImportanceSampleGGX(hitNorm, randV2(coord), hitMat.roughness);
             r = roulette ? reflect(prevDir, r) : ImportanceSampleCosine(hitNorm, randV2(coord)); // don't reflect when diffuse because it'll go beneath the surface
 

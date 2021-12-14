@@ -22,6 +22,6 @@ void main()
     /* DRAWBUFFERS: 0129 */
     gl_FragData[0] = albedo * light * vec4(1.0, 1.0, 1.0, isnt_water);
     gl_FragData[1] = vec4(normal.rgb * 0.5 + 0.5, normal.a);
-    gl_FragData[2] = albedo;
-    gl_FragData[3] = vec4(mix(1.0, specTex.r, isnt_water), mix(0.02, specTex.g, isnt_water), specTex.b, 1.0);
+    gl_FragData[2] = mix(vec4(1.0), albedo, isnt_water);
+    gl_FragData[3] = vec4(mix(1.0, specTex.r, isnt_water), mix(0.02, specTex.g, isnt_water), specTex.b, specTex.a);
 }

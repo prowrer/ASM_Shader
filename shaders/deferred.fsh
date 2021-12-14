@@ -11,7 +11,6 @@ vec2 ScreenResolution = vec2(viewWidth, viewHeight);
 
 /*
 const int colortex0Format = RGBA16F;
-const float ambientOcclusionLevel = 0.0;
 */
 
 #include "/lib/constants.glsl"
@@ -60,10 +59,10 @@ void main()
             #ifdef russianRoulette
                 diffuse = diffuse * (1.0 - surface_mat.metalness);
             #else
-                diffuse = min(diffuse+ambientLight*gtao(texcoord, normals.xyz, position, viewDir), 1.0) * (1.0 - surface_mat.metalness);
+                diffuse = mix(ambientLight*gtao(texcoord, normals.xyz, position, viewDir), diffuse, shadows) * (1.0 - surface_mat.metalness);
             #endif
         #else
-            diffuse = min(diffuse+ambientLight*gtao(texcoord, normals.xyz, position, viewDir), 1.0) * (1.0 - surface_mat.metalness);
+            diffuse = mix(ambientLight*gtao(texcoord, normals.xyz, position, viewDir), diffuse, shadows) * (1.0 - surface_mat.metalness);
         #endif
         diffuse *= 120e3; // apply accurate sun lux value
         specular *= 120e3; // apply accurate sun lux value
@@ -71,7 +70,7 @@ void main()
 
         // Apply emissive
         float lux = surface_mat.emission;
-        lux = lux <= 0.996078431 ? lux / 0.996078431 * 5800.0 : 0.0;
+        lux = lux <= 0.996078431 ? lux / 0.996078431 * 58e2 : 0.0;
         color.rgb += lux * surface_mat.albedo.rgb; // since lights are additive, simply add
     }
     else
