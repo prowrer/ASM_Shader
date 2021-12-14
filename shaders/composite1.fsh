@@ -32,7 +32,7 @@ void main()
     vec4 ssrt = vec4(0.0);
     #ifdef doSSRT
         ssrt = getSSRT(texcoord);
-        #ifdef doTemporal
+        #ifdef blurSSRT
             ssrt = atrous(texcoord, material.albedo, normals, position, material);
         #endif
 
