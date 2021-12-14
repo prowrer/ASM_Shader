@@ -66,15 +66,14 @@ void main()
         color.rgb *= absorption;
     }
 
-    vec4 ssrt = vec4(0);
+    vec4 ssrt = vec4(0.0);
     #ifdef doSSRT
         if (depth0 < 1.0)
             ssrt.rgb = ssr_ssgi(texcoord, viewDir, position, normals.xyz, material, color.rgb);
     #endif
 
-    /* DRAWBUFFERS: 0345 */
+    /* DRAWBUFFERS: 045 */
     gl_FragData[0] = color;
     gl_FragData[1] = ssrt;
-    gl_FragData[2] = ssrt;
-    gl_FragData[3] = vec4(exp(-depth0), 0.0, 0.0, 0.0);
+    gl_FragData[2] = vec4(exp(-depth0), 0.0, 0.0, 0.0);
 }

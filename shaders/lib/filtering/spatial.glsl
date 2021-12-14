@@ -64,7 +64,7 @@ vec4 atrous(in vec2 coord, in vec3 c, in vec3 n, in vec3 p, in Material m) // fo
             float weights = c_w * p_w * n_w;
 
             sum_w += weights;
-            result += getSSRT(newUV) * weights;
+            result += getPreviousSSRT(newUV) * weights;
         }
     }
     result /= sum_w;

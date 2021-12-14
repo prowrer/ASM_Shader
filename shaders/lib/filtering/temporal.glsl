@@ -19,7 +19,7 @@ vec3 temporal_SSRT(vec3 currentColor, sampler2D previousBuffer, vec3 p, vec3 v, 
 	prevPosition += doOffset ? v*avgDist : vec3(0.0); // we have to apply offset for specular reprojection
 	vec3 prevColor = max(texture2D(previousBuffer, prevTexcoord).rgb, 0.0);
 
-	const float p_phi = 0.01;
+	const float p_phi = 0.1;
 
 	float weights = strength;
 	

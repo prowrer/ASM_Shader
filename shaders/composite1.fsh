@@ -31,16 +31,16 @@ void main()
 
     vec4 ssrt = vec4(0.0);
     #ifdef doSSRT
-        ssrt = getSSRT(texcoord);
         #ifdef blurSSRT
             ssrt = atrous(texcoord, material.albedo, normals, position, material);
+        #else
+            ssrt = getPreviousSSRT(texcoord);
         #endif
 
         color.rgb = color.rgb*(1.0-material.metalness) + max(ssrt.rgb, 0.0);
         //color.rgb = ssrt.rgb;
     #endif
 
-    /* DRAWBUFFERS: 03 */
+    /* DRAWBUFFERS: 0 */
     gl_FragData[0] = color;
-    gl_FragData[1] = ssrt;
 }

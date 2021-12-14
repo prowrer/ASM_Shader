@@ -1,7 +1,7 @@
 uniform sampler2D colortex0; // main
 uniform sampler2D colortex1; // normals
 uniform sampler2D colortex2; // albedo
-uniform sampler2D colortex3; // SSRT
+uniform sampler2D colortex3; // Shading information buffer (vanillaAO*textureAO, ?, ?, ?)
 uniform sampler2D colortex4; // Previous SSRT buffer, clearing disabled
 uniform sampler2D colortex5; // Previous buffer values (depth, ?, ?, ?)
 uniform sampler2D colortex8; // Previous main buffer, clearing disabled
@@ -20,7 +20,7 @@ vec3 getAlbedo(in vec2 coord)
 {
     return texture2D(colortex2, coord).rgb;
 }
-vec4 getSSRT(in vec2 coord)
+vec4 getShadingInfo(in vec2 coord)
 {
     return texture2D(colortex3, coord);
 }
