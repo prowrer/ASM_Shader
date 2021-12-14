@@ -42,6 +42,7 @@ void main()
 
     vec4 normals = getNormals(texcoord);
     vec4 color = getColor(texcoord);
+    vec4 shadingInfo = getShadingInfo(texcoord);
 
     Material surface_mat = getMaterialProperties(texcoord);
     
@@ -59,10 +60,12 @@ void main()
             #ifdef russianRoulette
                 diffuse = diffuse * (1.0 - surface_mat.metalness);
             #else
-                diffuse = mix(ambientLight*gtao(texcoord, normals.xyz, position, viewDir), diffuse, shadows) * (1.0 - surface_mat.metalness);
+                float combinedAO = min(gtao(texcoord, normals.xyz, position, viewDir), shadingInfo.r);
+                diffuse = mix(ambientLight*combinedAO, diffuse, shadows) * (1.0 - surface_mat.metalness);
             #endif
         #else
-            diffuse = mix(ambientLight*gtao(texcoord, normals.xyz, position, viewDir), diffuse, shadows) * (1.0 - surface_mat.metalness);
+            float combinedAO = min(gtao(texcoord, normals.xyz, position, viewDir), shadingInfo.r);
+            diffuse = mix(ambientLight*combinedAO, diffuse, shadows) * (1.0 - surface_mat.metalness);
         #endif
         diffuse *= 120e3; // apply accurate sun lux value
         specular *= 120e3; // apply accurate sun lux value
