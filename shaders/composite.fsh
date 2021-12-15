@@ -11,16 +11,15 @@ uniform float viewWidth;
 vec2 ScreenResolution = vec2(viewWidth, viewHeight);
 
 /*
-const int colortex3Format = RGBA16F;
-const int colortex4Format = RGBA16F;
-const bool colortex4Clear = false;
+const int colortex5Format = RGBA16F;
+const bool colortex5Clear = false;
 */
 // We're going to need to store previous depthtex value for deghosting. We're going to use colortex5.r for that
 // we're going to set it's format to R16... hopefully the loss of precision is not too bad
 // and also disable clearing
 /*
-const int colortex5Format = R16;
-const bool colortex5Clear = false;
+const int colortex6Format = R16;
+const bool colortex6Clear = false;
 */
 
 #include "/lib/constants.glsl"
@@ -72,7 +71,7 @@ void main()
             ssrt.rgb = ssr_ssgi(texcoord, viewDir, position, normals.xyz, material, color.rgb);
     #endif
 
-    /* DRAWBUFFERS: 045 */
+    /* DRAWBUFFERS: 056 */
     gl_FragData[0] = color;
     gl_FragData[1] = ssrt;
     gl_FragData[2] = vec4(exp(-depth0), 0.0, 0.0, 0.0);

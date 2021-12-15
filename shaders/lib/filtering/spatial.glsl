@@ -32,7 +32,7 @@ vec4 atrous(in vec2 coord, in vec3 c, in vec3 n, in vec3 p, in Material m) // fo
         for (int y = 0; y < samples; y++)
         {
             vec2 xy = (vec2(x, y) + randV2(coord)) / samples;
-            xy = (xy * 2.0 - 1.0) * kernelSize;
+            xy = (xy * 2.0 - 1.0) * kernelSize / 2.0; // divide by 2 is because [-size, size] totals to 2*size
             vec2 newUV = coord + xy*step_;
 
             // Make sure the coordinates are not out of bound

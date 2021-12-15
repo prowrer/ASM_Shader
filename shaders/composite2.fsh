@@ -33,7 +33,7 @@ void main()
     // Volumetric code
     {
         // Constants
-        const float density = 0.001;
+        const float density = 0.01;
         const vec3 fogColor = vec3(0.73, 0.8, 0.82);
         const int volumetricSteps = 8;
 
@@ -60,7 +60,6 @@ void main()
 
         color.rgb = color.rgb*transmittance + fogColor*(1.0 - transmittance)*20e3;
     }
-
 
     /* DRAWBUFFERS: 0 */
     gl_FragData[0] = color;

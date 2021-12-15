@@ -19,7 +19,7 @@ void main()
     vec4 light = texture2D(lightmap, lmCoord);
     vec4 specTex = texture2D(specular, texcoord);
 
-    /* DRAWBUFFERS: 0129 */
+    /* DRAWBUFFERS: 0123 */
     gl_FragData[0] = albedo * light * vec4(1.0, 1.0, 1.0, isnt_water);
     gl_FragData[1] = vec4(normal.rgb * 0.5 + 0.5, normal.a);
     gl_FragData[2] = mix(vec4(1.0), albedo, isnt_water);

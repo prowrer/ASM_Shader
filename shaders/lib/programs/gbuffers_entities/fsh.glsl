@@ -24,7 +24,7 @@ void main()
     normal.z = sqrt(1.0 - dot(normal.xy, normal.xy)); // reconstruct the Z value of the normal
     normal = TBN * normal; // align the normal by TBN matrix
 
-    /* DRAWBUFFERS: 0129 */
+    /* DRAWBUFFERS: 0123 */
     gl_FragData[0] = albedo * light;
     gl_FragData[1] = vec4(normal * 0.5 + 0.5, 1.0f);
     gl_FragData[2] = albedo;

@@ -48,12 +48,12 @@ void main()
     #else
         if (length(cameraPosition - previousCameraPosition) <= 1e-5)
         {
-            if (prevColor.a < 1000.0)
+            if (prevColor.a < 256.0)
             {
-                prevColor.rgb += color.rgb / 1000.0;
+                prevColor.rgb += color.rgb / 256.0;
                 prevColor.a++;
             }
-            color.rgb = prevColor.rgb * 1000.0 / prevColor.a;
+            color.rgb = prevColor.rgb * 256.0 / prevColor.a;
         }
         else
             prevColor = vec4(0);

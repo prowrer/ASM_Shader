@@ -26,21 +26,21 @@ void main()
         shadingInfo.r = color.a;
     #else
         vec4 normal = texture2D(normals, texcoord); // sample the normal map texture
-        shadingInfo.r = color.a * normal.z;
+        shadingInfo.r = color.a*normal.z;
         normal.xy = normal.xy * 2.0 - 1.0; // convert to [-1, 1] range
         normal.z = sqrt(1.0 - dot(normal.xy, normal.xy)); // reconstruct the Z value of the normal
         normal.rgb = TBN * normal.rgb; // align the normal by TBN matrix
     #endif
 
-    /* DRAWBUFFERS: 01239 */
+    /* DRAWBUFFERS: 01234 */
     gl_FragData[0] = albedo * light;
     gl_FragData[1] = vec4(normal.rgb * 0.5 + 0.5, pow(normal.a, 2.2));
     gl_FragData[2] = albedo;
-    gl_FragData[3] = shadingInfo;
     #ifdef noPBR_RP
         float avgAlbedo = dot(albedo.rgb, vec3(0.333));
-        gl_FragData[4] = vec4(1.0 - sqrt(1.0 - avgAlbedo), min(avgAlbedo, 229.0/255.0), 0.0, 1.0);
+        gl_FragData[3] = vec4(1.0 - sqrt(1.0 - avgAlbedo), min(avgAlbedo, 229.0/255.0), 0.0, 1.0);
     #else
-        gl_FragData[4] = texture2D(specular, texcoord);
+        gl_FragData[3] = texture2D(specular, texcoord);
     #endif
+    gl_FragData[4] = shadingInfo;
 }

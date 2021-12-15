@@ -38,7 +38,6 @@ void main()
         #endif
 
         color.rgb = color.rgb*(1.0-material.metalness) + max(ssrt.rgb, 0.0);
-        //color.rgb = ssrt.rgb;
     #endif
 
     /* DRAWBUFFERS: 0 */
